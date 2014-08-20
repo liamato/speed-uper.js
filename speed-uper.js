@@ -1,8 +1,23 @@
 "use strict";
 
-var serverside = 'serverside.php';
+/* 
+*   
+*   @author = Marc Duran Olivé
+*
+*   @license = BSD 3-Clause License
+*
+*
+*   serverside = path to the serverside file
+*    
+*   server = local / remote
+*
+*
+*/
 
-var debug = false;
+
+var server = 'local';
+
+var serverside = 'serverside.php';
 
 
 var locationAjaxHeaders, httpVersion;
@@ -47,6 +62,8 @@ function getUrlVars() {
     });
     return vars;
 }
+
+var debug = false;
 
 if(GET['debug'] === "true"){debug = true;}
 
@@ -252,27 +269,30 @@ for(var i = 0; i < tags.length; i++){
 		for(var e = 0; e < tags[tags[i]].length; e++){
 			//console.log('for 2 if, i: ' + tags[i] + "[" + e + "]");
 			//console.log(tags[i][e]);
-		    if(tags[tags[i]][e].getAttribute(attr)!= null){
-		    if(tags[tags[i]][e].getAttribute(attr).indexOf("http")!= -1){
-			publicAjax(tags[tags[i]][e].getAttribute(attr), 'false');
-			blinks[tags[tags[i]][e]] = JSONdata['cURL']['http_code'];
-		    }else{
-			
-			//blinks[tags[tags[i]][e]] = httpReq('GET', tags[tags[i]][e].getAttribute(attr), 'status'); // <-- aaaaaaaaaaaaaaahhh!!!!
-
-			if(blinks[tags[tags[i]][e]] != 200){
-			    if(location.search != ''){
-				var folder = location.href.split('?');
-				folder = folder[0].slice(0, folder[0].lastIndexOf('/') + 1);
-			    }else{
-				var folder = location.href.slice(0, location.href.lastIndexOf('/') + 1);
-			    }
-			console.log(folder + tags[tags[i]][e].getAttribute(attr));
-			    publicAjax(folder + tags[tags[i]][e].getAttribute(attr), 'false');
-			    blinks[tags[tags[i]][e]] = JSONdata['cURL']['http_code'];
-			}
-
-		    }}
+            if(tags[tags[i]][e].getAttribute(attr)!= null){
+                if(tags[tags[i]][e].getAttribute(attr).indexOf("http")!= -1){
+			         publicAjax(tags[tags[i]][e].getAttribute(attr), 'false');
+			         blinks[tags[tags[i]][e]] = JSONdata['cURL']['http_code'];
+			         if(debug === true){console.log(JSONdata);}
+		        }else{
+                    if(server === 'local'){
+			             blinks[tags[tags[i]][e]] = httpReq('GET', tags[tags[i]][e].getAttribute(attr), 'status');
+                    }else if(server === 'remote'){
+                        if(blinks[tags[tags[i]][e]] != 200){
+                            if(location.search != ''){
+			                     var folder = location.href.split('?');
+			                     folder = folder[0].slice(0, folder[0].lastIndexOf('/') + 1);
+			                 }else{
+			         	       var folder = location.href.slice(0, location.href.lastIndexOf('/') + 1);
+                             }
+			                 console.log(folder + tags[tags[i]][e].getAttribute(attr));
+			                 publicAjax(folder + tags[tags[i]][e].getAttribute(attr), 'false');
+			                 blinks[tags[tags[i]][e]] = JSONdata['cURL']['http_code'];
+			                 if(debug === true){console.log(JSONdata);}
+                        }
+                    }
+                }
+            }
 
 			if(debug == true){
 				var trencat;
@@ -364,7 +384,7 @@ if(debug != true){
     console.group('Frontend');    
 	// DOM elements
 	if(domElems > 1000){
-		console.warn("DOM elements: " + domElems);
+		console.warn("DOM elements: " + domElems + " Only hould have 1000 DOM elements per page");
 	}else{
 		console.info("%cDOM elements: %c" + domElems,'color:blue;','color: black;');
 	}

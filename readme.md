@@ -30,11 +30,10 @@ To see the results just open the JS console `F12` on dev tools.
 In that file you have 2 variables to confgure:
 
 * **server**
+ * Usually doesn't matter where is your _speed-uper.js_ and you should put **`local`** to work well, but you can try with `remote` if it doesn't work
  * In that variable you only can put 2 options:
     * _remote_
-        * If your `serverside` script is on the same server as your **_speed-uper.js_** file
     * _local_
-        * If your `serverside` script is other server as your **_speed-uper.js_** file
  * By default is in **local**
 * **serverside**
  * In that variable you must put the **path/link** to the serverside script
